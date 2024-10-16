@@ -1,19 +1,15 @@
-import React from "react";
+import Greeting from "./components/Greeting";
 
 function App() {
-  // return (
-  //   <>
-  //     <h1 style="color: 'yellow'">Welcome to my WebApp!</h1>
-  //     <p>This is a React app</p>
-  //   </>
-  // );
-
-  const h1 = React.createElement("h1", { style: { color: "yellow" } }, "Welcome to my WebApp!");
-  const p = React.createElement("p", {}, "This is a React app");
-  const div = React.createElement("div", {}, [h1, p]);
-  return div;
+  return (
+    <>
+      <Greeting name="Sayeed" pos="1" />
+      <Greeting name="Altaf" />
+      <Greeting name="John" />
+      <Greeting name="Vinod" />
+      <Greeting name="Imad" />
+    </>
+  );
 }
 
 export default App;
-
-export const PI = 3.14;
