@@ -1,13 +1,19 @@
+import Counter from "./components/Counter";
 import Greeting from "./components/Greeting";
 
 function App() {
+  let names = ["Sayeed", "Altaf", "John", "Vinod", "Imad"];
+
   return (
     <>
-      <Greeting name="Sayeed" pos="1" />
-      <Greeting name="Altaf" />
-      <Greeting name="John" />
-      <Greeting name="Vinod" />
-      <Greeting name="Imad" />
+      <div>
+        {names.map((ele, idx) => (
+          <div key={ele + idx}>
+            <Greeting name={ele} />
+          </div>
+        ))}
+        <Counter />
+      </div>
     </>
   );
 }
