@@ -3,6 +3,7 @@ import { useState } from "react";
 function TodoList() {
   const [todoText, setTodoText] = useState("");
   const [todos, setTodos] = useState([]);
+  const [editTask, setEditTask] = useState({});
 
   const addTodo = () => {
     if (todoText) {
@@ -38,9 +39,18 @@ function TodoList() {
     }
   };
 
+  const saveEditTask = (idx) => {
+    if (editTask.task) {
+      let arr = [...todos];
+      arr[idx] = editTask;
+      setTodos(arr);
+      setEditTask({});
+    }
+  };
+
   return (
     <div className="bg-gray-100 flex items-center justify-center h-screen">
-      <div className="bg-white shadow-lg rounded-lg p-8 max-w-md w-full">
+      <div className="bg-white shadow-lg rounded-lg p-8 max-w-lg w-full">
         <h1 className="text-2xl font-bold mb-4 text-center text-gray-800">Todo List</h1>
 
         <div className="mb-4">
@@ -64,13 +74,31 @@ function TodoList() {
         <ul id="todo-list" className="space-y-3">
           {todos?.map((todo, idx) => (
             <li key={idx} className="flex justify-between items-center p-4 bg-gray-100 rounded-lg">
-              <span className={`text-gray-700 ${todo?.isCompleted ? "line-through" : ""}`}>{todo.task}</span>
+              {editTask.id !== todo.id ? (
+                <span className={`text-gray-700 ${todo?.isCompleted ? "line-through" : ""}`}>{todo.task}</span>
+              ) : (
+                <input value={editTask.task} onChange={(e) => setEditTask({ ...editTask, task: e.target.value })} />
+              )}
               <div className="flex gap-4">
-                {!todo?.isCompleted && (
-                  <button onClick={() => taskComplete(todo.id)} className="text-green-500 hover:text-green-600 font-semibold">
-                    Completed
-                  </button>
-                )}
+                {!todo?.isCompleted && editTask.id !== todo.id ? (
+                  <>
+                    <button onClick={() => setEditTask(todo)} className="text-blue-500 hover:text-blue-600 font-semibold">
+                      Edit
+                    </button>
+                    <button onClick={() => taskComplete(todo.id)} className="text-green-500 hover:text-green-600 font-semibold">
+                      Completed
+                    </button>
+                  </>
+                ) : !todo?.isCompleted ? (
+                  <>
+                    <button onClick={() => saveEditTask(idx)} className="text-blue-500 hover:text-blue-600 font-semibold">
+                      Save
+                    </button>
+                    <button onClick={() => setEditTask({})} className="text-red-500 hover:text-red-600 font-semibold">
+                      Cancel
+                    </button>
+                  </>
+                ) : null}
                 <button onClick={() => deleteTask(todo.id)} className="text-red-500 hover:text-red-600 font-semibold">
                   Delete
                 </button>
