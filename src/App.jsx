@@ -6,6 +6,7 @@ import Tabs from "./components/Tabs";
 import TodoList from "./components/TodoList";
 import UserList from "./components/UserList";
 import { Route, Routes, Link } from "react-router-dom";
+import User from "./components/User";
 
 function App() {
   let names = ["Sayeed", "Altaf", "John", "Vinod", "Imad"];
@@ -28,10 +29,11 @@ function App() {
         <Link to="/tabs">Tabs</Link>
       </nav>
       <Routes>
-        <p>Ttest</p>
+        {/* <p>Ttest</p> */}
         <Route path="/" element={<Greeting />} />
         <Route path="/counter" element={<Counter />} />
         <Route path="/users" element={<UserList />} />
+        <Route path="/users/:username/:a" element={<User />} />
         <Route path="/todos" element={<TodoList />} />
         <Route path="/tabs" element={<Tabs />} />
         <Route path="*" element={<NotFound />} />
