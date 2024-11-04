@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { useState } from "react";
+import { createContext, useState } from "react";
 import Counter from "./components/Counter";
 import Greeting from "./components/Greeting";
 import Tabs from "./components/Tabs";
@@ -8,10 +8,13 @@ import UserList from "./components/UserList";
 import { Route, Routes, Link } from "react-router-dom";
 import User from "./components/User";
 
+export const CountContext = createContext({});
+
 function App() {
   let names = ["Sayeed", "Altaf", "John", "Vinod", "Imad"];
   const [toggle, setToggle] = useState(false);
   const NewComp = Tabs;
+  const [count, setCount] = useState(0);
 
   return (
     <>
@@ -21,23 +24,26 @@ function App() {
       {toggle && <Counter />} */}
       {/* <UserList /> */}
       {/* <TodoList /> */}
-      <nav className="flex justify-center gap-5 py-6 bg-blue-400">
-        <Link to="/">Home</Link>
-        <Link to="/users">Users</Link>
-        <Link to="/counter">Counter</Link>
-        <Link to="/todos">TodoList</Link>
-        <Link to="/tabs">Tabs</Link>
-      </nav>
-      <Routes>
-        {/* <p>Ttest</p> */}
-        <Route path="/" element={<Greeting />} />
-        <Route path="/counter" element={<Counter />} />
-        <Route path="/users" element={<UserList />} />
-        <Route path="/users/:username/:a" element={<User />} />
-        <Route path="/todos" element={<TodoList />} />
-        <Route path="/tabs" element={<Tabs />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+      <CountContext.Provider value={{ count, setCount }}>
+        <nav className="flex justify-center gap-5 py-6 bg-blue-400">
+          <Link to="/">Home</Link>
+          <Link to="/users">Users</Link>
+          <Link to="/counter">Counter</Link>
+          <Link to="/todos">TodoList</Link>
+          <Link to="/tabs">Tabs</Link>
+          <p>{count}</p>
+        </nav>
+        <Routes>
+          {/* <p>Ttest</p> */}
+          <Route path="/" element={<Greeting />} />
+          <Route path="/counter" element={<Counter />} />
+          <Route path="/users" element={<UserList />} />
+          <Route path="/users/:username/:a" element={<User />} />
+          <Route path="/todos" element={<TodoList />} />
+          <Route path="/tabs" element={<Tabs />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </CountContext.Provider>
     </>
   );
 }
