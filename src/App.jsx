@@ -1,12 +1,14 @@
 /* eslint-disable no-unused-vars */
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import Counter from "./components/Counter";
 import Greeting from "./components/Greeting";
 import Tabs from "./components/Tabs";
 import TodoList from "./components/TodoList";
 import UserList from "./components/UserList";
-import { Route, Routes, Link } from "react-router-dom";
+import { Route, Routes, Link, useNavigate, Navigate } from "react-router-dom";
 import User from "./components/User";
+import Signin from "./components/Signin";
+import PrivateRoute from "./utils/PrivateRoute";
 
 export const CountContext = createContext({});
 
@@ -14,7 +16,15 @@ function App() {
   let names = ["Sayeed", "Altaf", "John", "Vinod", "Imad"];
   const [toggle, setToggle] = useState(false);
   const NewComp = Tabs;
+  const navigate = useNavigate();
   const [count, setCount] = useState(0);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    if (localStorage.getItem("isLoggedIn") === "true") {
+      setIsLoggedIn(true);
+    }
+  }, []);
 
   return (
     <>
@@ -24,23 +34,40 @@ function App() {
       {toggle && <Counter />} */}
       {/* <UserList /> */}
       {/* <TodoList /> */}
-      <CountContext.Provider value={{ count, setCount }}>
+      <CountContext.Provider value={{ count, setCount, isLoggedIn, setIsLoggedIn }}>
         <nav className="flex justify-center gap-5 py-6 bg-blue-400">
           <Link to="/">Home</Link>
           <Link to="/users">Users</Link>
           <Link to="/counter">Counter</Link>
           <Link to="/todos">TodoList</Link>
           <Link to="/tabs">Tabs</Link>
-          <p>{count}</p>
+          <p className="cursor-pointer" onClick={() => (isLoggedIn ? setIsLoggedIn(false) : navigate("/signin"))}>
+            {isLoggedIn ? "Log Out" : "Log In"}
+          </p>
         </nav>
         <Routes>
           {/* <p>Ttest</p> */}
-          <Route path="/" element={<Greeting />} />
+          <Route
+            path="/"
+            element={
+              <PrivateRoute isLoggedIn={isLoggedIn}>
+                <Greeting />
+              </PrivateRoute>
+            }
+          />
           <Route path="/counter" element={<Counter />} />
-          <Route path="/users" element={<UserList />} />
+          <Route
+            path="/users"
+            element={
+              <PrivateRoute isLoggedIn={isLoggedIn}>
+                <UserList />
+              </PrivateRoute>
+            }
+          />
           <Route path="/users/:username/:a" element={<User />} />
           <Route path="/todos" element={<TodoList />} />
           <Route path="/tabs" element={<Tabs />} />
+          <Route path="/signin" element={isLoggedIn ? <Navigate to={"/"} /> : <Signin />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </CountContext.Provider>
