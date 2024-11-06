@@ -27,6 +27,11 @@ function App() {
     }
   }, []);
 
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    localStorage.removeItem("isLoggedIn");
+  };
+
   return (
     <>
       {/* <button className="py-2 px-4 bg-blue-500" onClick={() => setToggle(!toggle)}>
@@ -43,7 +48,7 @@ function App() {
           <Link to="/todos">TodoList</Link>
           <Link to="/tabs">Tabs</Link>
           <Link to="/user-filter">User Filter</Link>
-          <p className="cursor-pointer" onClick={() => (isLoggedIn ? setIsLoggedIn(false) : navigate("/signin"))}>
+          <p className="cursor-pointer" onClick={() => (isLoggedIn ? handleLogout() : navigate("/signin"))}>
             {isLoggedIn ? "Log Out" : "Log In"}
           </p>
         </nav>
