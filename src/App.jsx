@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { createContext, useEffect, useState } from "react";
+import axios from "axios";
 import Counter from "./components/Counter";
 import Greeting from "./components/Greeting";
 import Tabs from "./components/Tabs";
@@ -10,6 +11,7 @@ import User from "./components/User";
 import Signin from "./components/Signin";
 import PrivateRoute from "./utils/PrivateRoute";
 import UserFilter from "./components/UserFilter";
+import Weather from "./components/Weather";
 
 export const CountContext = createContext({});
 
@@ -25,6 +27,7 @@ function App() {
     if (localStorage.getItem("isLoggedIn") === "true") {
       setIsLoggedIn(true);
     }
+    axios.get(import.meta.env.VITE_API_URL + "/courses/courseList").then((res) => console.log(res));
   }, []);
 
   const handleLogout = () => {
@@ -47,6 +50,7 @@ function App() {
           <Link to="/counter">Counter</Link>
           <Link to="/todos">TodoList</Link>
           <Link to="/tabs">Tabs</Link>
+          <Link to="/weather">Weather</Link>
           <Link to="/user-filter">User Filter</Link>
           <p className="cursor-pointer" onClick={() => (isLoggedIn ? handleLogout() : navigate("/signin"))}>
             {isLoggedIn ? "Log Out" : "Log In"}
@@ -75,6 +79,7 @@ function App() {
           <Route path="/todos" element={<TodoList />} />
           <Route path="/tabs" element={<Tabs />} />
           <Route path="/user-filter" element={<UserFilter />} />
+          <Route path="/weather" element={<Weather />} />
           <Route path="/signin" element={isLoggedIn ? <Navigate to={"/"} /> : <Signin />} />
           <Route path="*" element={<NotFound />} />
         </Routes>

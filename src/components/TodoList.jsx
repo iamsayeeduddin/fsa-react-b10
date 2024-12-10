@@ -1,55 +1,92 @@
 /* eslint-disable react/prop-types */
-import { useState } from "react";
+import { useReducer, useState } from "react";
 // import ListItem from "./ListItem";
 
 function TodoList() {
-  const [todoText, setTodoText] = useState("");
-  const [todos, setTodos] = useState([]);
-  const [editTask, setEditTask] = useState({});
-
-  const addTodo = () => {
-    if (todoText) {
-      const todoObj = {
-        id: (todos[todos.length - 1]?.id || 0) + 1,
-        task: todoText,
+  const reducer = (state, action) => {
+    if (action.type === "ADD") {
+      let obj = {
+        id: (state[state.length - 1]?.id || 0) + 1,
+        task: action.payload.task,
         isCompleted: false,
       };
-      let arr = [...todos];
-      arr.push(todoObj);
-      setTodos(arr);
-      setTodoText("");
+      return [...state, obj];
     }
+
+    if (action.type === "DELETE") {
+      return state.filter((ele) => ele.id !== action.payload.id);
+    }
+
+    if (action.type === "COMPLETED") {
+      let arr = state.map((ele) => {
+        if (ele.id === action.payload.id) {
+          return { ...ele, isCompleted: true };
+        }
+        return ele;
+      });
+      return arr;
+    }
+
+    if (action.type === "EDIT") {
+      let arr = state.map((ele) => {
+        if (ele.id === action.payload.id) {
+          return { ...ele, task: action.payload.task };
+        }
+        return ele;
+      });
+      return arr;
+    }
+
+    return state;
   };
 
-  const taskComplete = (id) => {
-    const arr = [...todos];
-    let idx = arr.findIndex((ele) => ele.id === id);
-    if (idx > -1) {
-      let obj = { ...arr[idx] };
-      obj.isCompleted = true;
-      arr[idx] = obj;
-      setTodos(arr);
-    }
-  };
+  const [todoText, setTodoText] = useState("");
+  const [todos, dispatch] = useReducer(reducer, []);
+  const [editTask, setEditTask] = useState({});
 
-  const deleteTask = (id) => {
-    const arr = [...todos];
-    let idx = arr.findIndex((ele) => ele.id === id);
-    if (idx > -1) {
-      arr.splice(idx, 1);
-      setTodos(arr);
-    }
-  };
+  // const addTodo = () => {
+  //   if (todoText) {
+  //     const todoObj = {
+  //       id: (todos[todos.length - 1]?.id || 0) + 1,
+  //       task: todoText,
+  //       isCompleted: false,
+  //     };
+  //     let arr = [...todos];
+  //     arr.push(todoObj);
+  //     setTodos(arr);
+  //     setTodoText("");
+  //   }
+  // };
 
-  const saveEditTask = (idx) => {
-    console.log(idx);
-    if (editTask.task) {
-      let arr = [...todos];
-      arr[idx] = editTask;
-      setTodos(arr);
-      setEditTask({});
-    }
-  };
+  // const taskComplete = (id) => {
+  //   const arr = [...todos];
+  //   let idx = arr.findIndex((ele) => ele.id === id);
+  //   if (idx > -1) {
+  //     let obj = { ...arr[idx] };
+  //     obj.isCompleted = true;
+  //     arr[idx] = obj;
+  //     setTodos(arr);
+  //   }
+  // };
+
+  // const deleteTask = (id) => {
+  //   const arr = [...todos];
+  //   let idx = arr.findIndex((ele) => ele.id === id);
+  //   if (idx > -1) {
+  //     arr.splice(idx, 1);
+  //     setTodos(arr);
+  //   }
+  // };
+
+  // const saveEditTask = (idx) => {
+  //   console.log(idx);
+  //   if (editTask.task) {
+  //     let arr = [...todos];
+  //     arr[idx] = editTask;
+  //     setTodos(arr);
+  //     setEditTask({});
+  //   }
+  // };
 
   return (
     <div className="bg-gray-100 flex items-center justify-center h-screen">
@@ -67,7 +104,10 @@ function TodoList() {
           />
           <button
             id="add-btn"
-            onClick={addTodo}
+            onClick={() => {
+              dispatch({ type: "ADD", payload: { task: todoText } });
+              setTodoText("");
+            }}
             className="w-full mt-2 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             Add Todo
@@ -82,9 +122,12 @@ function TodoList() {
               todo={todo}
               editTask={editTask}
               setEditTask={setEditTask}
-              taskComplete={taskComplete}
-              saveEditTask={saveEditTask}
-              deleteTask={deleteTask}
+              taskComplete={() => dispatch({ type: "COMPLETED", payload: { id: todo.id } })}
+              saveEditTask={() => {
+                dispatch({ type: "EDIT", payload: { task: editTask.task, id: todo.id } });
+                setEditTask({});
+              }}
+              deleteTask={() => dispatch({ type: "DELETE", payload: { id: todo.id } })}
             />
           ))}
         </ul>
