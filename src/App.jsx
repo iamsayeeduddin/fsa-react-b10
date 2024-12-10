@@ -27,7 +27,7 @@ function App() {
     if (localStorage.getItem("isLoggedIn") === "true") {
       setIsLoggedIn(true);
     }
-    axios.get(import.meta.env.VITE_API_URL + "/courses/courseList").then((res) => console.log(res));
+    axios.get(import.meta.env.VITE_API_URL + "courses/courseList").then((res) => console.log(res));
   }, []);
 
   const handleLogout = () => {
